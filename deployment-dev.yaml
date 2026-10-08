@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: tewelljd/225-lab3-3:latest  #<-------change this to match your MiamiID.
+        image: cithit/tewelljd:latest
         ports:
         - containerPort: 80  # Expose NGINX on port 80      
 ---
