@@ -2,11 +2,11 @@ pipeline {
     agent any 
 
     environment {
-        DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'  
-        DOCKER_IMAGE = 'cithit/tewelljd'                             //<-----change this to your MiamiID!
+        DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'
+        DOCKER_IMAGE = 'cithit/tewelljd'
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        GITHUB_URL = 'https://github.com/tewelljd-cloud/225-lab3-3.git' //<-----change this to match this new repository!
-       KUBECONFIG = credentials('tewelljd-fl26')                     //<-----change this to match your kubernetes credentials (MiamiID-225)!  1 More change on line 63!
+        GITHUB_URL = 'https://github.com/tewelljd-cloud/225-lab3-3.git'
+        KUBECONFIG = credentials('tewelljd-fl26')
     }
 
     stages {
@@ -46,9 +46,7 @@ pipeline {
         stage('Deploy to Dev Environment') {
             steps {
                 script {
-                    // This sets up the Kubernetes configuration using the specified KUBECONFIG
                     def kubeConfig = readFile(KUBECONFIG)
-                    // This updates the deployment-dev.yaml to use the new image tag
                     sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-dev.yaml"
                     sh "kubectl apply -f deployment-dev.yaml"
                 }
@@ -61,13 +59,13 @@ pipeline {
                     sh "kubectl get pods"
                     sh "kubectl get services"
                     sh "kubectl get deploy"
+                    sh "kubectl get ingress"
                 }
             }
         }
     }
 
     post {
-
         success {
             slackSend color: "good", message: "Build Completed: ${env.JOB_NAME} ${env.BUILD_NUMBER}"
         }
